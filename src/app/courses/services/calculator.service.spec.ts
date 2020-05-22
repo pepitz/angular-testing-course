@@ -2,7 +2,7 @@ import { CalculatorService } from "./calculator.service";
 import { LoggerService } from "./logger.service";
 import { TestBed } from "@angular/core/testing";
 // Jasmine is a complete testing framework
-describe("CalculatorService", () => {
+xdescribe("CalculatorService", () => {
   let calculator: CalculatorService;
   let loggerSpy: any;
 

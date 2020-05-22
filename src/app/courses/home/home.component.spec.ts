@@ -1,3 +1,4 @@
+import { setTimeout } from "timers";
 import {
   async,
   ComponentFixture,
@@ -32,6 +33,10 @@ describe("HomeComponent", () => {
 
   const beginnerCourses = setupCourses().filter(
     (course) => course.category == "BEGINNER"
+  );
+
+  const advancedCourses = setupCourses().filter(
+    (course) => course.category == "ADVANCED"
   );
 
   beforeEach(async(() => {
@@ -71,18 +76,86 @@ describe("HomeComponent", () => {
   });
 
   it("should display only advanced courses", () => {
-    pending();
+    coursesService.findAllCourses.and.returnValue(of(advancedCourses));
+
+    fixture.detectChanges();
+
+    const tabs = el.queryAll(By.css(".mat-tab-label"));
+
+    expect(tabs.length).toBe(1, "Unexpected number of tabs found");
   });
 
   it("should display both tabs", () => {
-    pending();
+    coursesService.findAllCourses.and.returnValue(of(setupCourses()));
+
+    fixture.detectChanges();
+
+    const tabs = el.queryAll(By.css(".mat-tab-label"));
+
+    expect(tabs.length).toBe(2, "Expected to find two tabs");
   });
 
   it("should display advanced courses when tab clicked - fakeAsync", fakeAsync(() => {
-    pending();
+    coursesService.findAllCourses.and.returnValue(of(setupCourses()));
+
+    fixture.detectChanges();
+
+    const tabs = el.queryAll(By.css(".mat-tab-label"));
+
+    click(tabs[1]);
+
+    fixture.detectChanges();
+
+    flush();
+
+    const cardTitles = el.queryAll(
+      By.css(".mat-tab-body-active .mat-card-title")
+    );
+
+    console.log(cardTitles);
+
+    expect(cardTitles.length).toBeGreaterThan(0, "Could not find card titles");
+
+    expect(cardTitles[0].nativeElement.textContent).toContain(
+      "Angular Security Course"
+    );
+
+    expect(cardTitles[0].nativeElement.textContent).toContain(
+      "Angular Security Course"
+    );
   }));
 
-  xit("should display advanced courses when tab clicked - async", async(() => {
-    pending();
+  it("should display advanced courses when tab clicked - async", async(() => {
+    coursesService.findAllCourses.and.returnValue(of(setupCourses()));
+
+    fixture.detectChanges();
+
+    const tabs = el.queryAll(By.css(".mat-tab-label"));
+
+    click(tabs[1]);
+
+    fixture.detectChanges();
+
+    fixture.whenStable().then(() => {
+      console.log("called whenStable() ");
+
+      const cardTitles = el.queryAll(
+        By.css(".mat-tab-body-active .mat-card-title")
+      );
+
+      expect(cardTitles.length).toBeGreaterThan(
+        0,
+        "Could not find card titles"
+      );
+
+      expect(cardTitles[0].nativeElement.textContent).toContain(
+        "Angular Security Course"
+      );
+
+      expect(cardTitles[0].nativeElement.textContent).toContain(
+        "Angular Security Course"
+      );
+    });
+    
   }));
 });
